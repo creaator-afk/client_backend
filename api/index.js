@@ -16,7 +16,7 @@ const index = express();
 index.use(cors());
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI || 'mongodb+srv://akuma10901:tmwLYXtCwS5Iq4j3@dailyblogdata.s30xe0d.mongodb.net/?retryWrites=true&w=majority&appName=dailyBlogData')
+mongoose.connect(process.env.MONGODB_URI || 'mongodb+srv://akuma10901:tmwLYXtCwS5Iq4j3@dailyblogdata.s30xe0d.mongodb.net/?retryWrites=true&w=majority&appName=dailyBlogData')
     .then(() => {
         console.log('Connected to MongoDB');
     })
