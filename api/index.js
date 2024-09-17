@@ -7,13 +7,13 @@ const multer = require('multer');
 const cors = require('cors');
 const mongoose = require('mongoose');
 
-const indexRouter = require('./routes');
-const usersRouter = require('./routes/users');
+const indexRouter = require('../routes');
+const usersRouter = require('../routes/users');
 
-const app = express();
+const index = express();
 
 // Enable CORS
-app.use(cors());
+index.use(cors());
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI || 'mongodb+srv://akuma10901:tmwLYXtCwS5Iq4j3@dailyblogdata.s30xe0d.mongodb.net/?retryWrites=true&w=majority&appName=dailyBlogData')
@@ -25,8 +25,8 @@ mongoose.connect(process.env.MONGO_URI || 'mongodb+srv://akuma10901:tmwLYXtCwS5I
     });
 
 // Mongoose models
-const Job = require('./models/Job');
-const File = require('./models/File');
+const Job = require('../models/Job');
+const File = require('../models/File');
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -40,16 +40,16 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // Middleware to parse JSON and URL-encoded data
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+index.use(express.json());
+index.use(express.urlencoded({ extended: false }));
 
 // Other middleware
-app.use(logger('dev'));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, '../public')));
+index.use(logger('dev'));
+index.use(cookieParser());
+index.use(express.static(path.join(__dirname, '../public')));
 
 // Routes
-app.get('/jobs', async (req, res) => {
+index.get('/jobs', async (req, res) => {
     try {
         const jobs = await Job.find();
         res.json(jobs);
@@ -58,7 +58,7 @@ app.get('/jobs', async (req, res) => {
     }
 });
 
-app.post('/jobs', async (req, res) => {
+index.post('/jobs', async (req, res) => {
     try {
         if (!req.body) {
             return res.status(400).json({ error: 'Request body is missing' });
@@ -80,7 +80,7 @@ app.post('/jobs', async (req, res) => {
     }
 });
 
-app.put('/jobs/:id', async (req, res) => {
+index.put('/jobs/:id', async (req, res) => {
     try {
         const updatedJob = await Job.findByIdAndUpdate(req.params.id, req.body, { new: true });
         if (!updatedJob) {
@@ -92,7 +92,7 @@ app.put('/jobs/:id', async (req, res) => {
     }
 });
 
-app.delete('/jobs/:id', async (req, res) => {
+index.delete('/jobs/:id', async (req, res) => {
     try {
         const deletedJob = await Job.findByIdAndDelete(req.params.id);
         if (!deletedJob) {
@@ -104,7 +104,7 @@ app.delete('/jobs/:id', async (req, res) => {
     }
 });
 
-app.post('/upload', upload.single('file'), async (req, res) => {
+index.post('/upload', upload.single('file'), async (req, res) => {
     try {
         const newFile = new File({
             filePath: req.file.path,
@@ -118,19 +118,19 @@ app.post('/upload', upload.single('file'), async (req, res) => {
 });
 
 // view engine setup
-app.set('views', path.join(__dirname, '../views'));
-app.set('view engine', 'pug');
+index.set('views', path.join(__dirname, '../views'));
+index.set('view engine', 'pug');
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+index.use('/', indexRouter);
+index.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
-app.use(function (req, res, next) {
+index.use(function (req, res, next) {
     next(createError(404));
 });
 
 // error handler
-app.use(function (err, req, res, next) {
+index.use(function (err, req, res, next) {
     // set locals, only providing error in development
     res.locals.message = err.message;
     res.locals.error = req.app.get('env') === 'development' ? err : {};
@@ -141,8 +141,8 @@ app.use(function (err, req, res, next) {
 });
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
+index.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
 
-module.exports = app;
+module.exports = index;

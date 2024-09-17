@@ -1,9 +1,9 @@
 {
   "name": "client-management-backend",
   "version": "1.0.0",
-  "main": "app.js",
+  "main": "api/index.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "node api/index.js"
   },
   "dependencies": {
     "cookie-parser": "^1.4.5",
